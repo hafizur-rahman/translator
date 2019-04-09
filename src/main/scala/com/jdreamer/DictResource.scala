@@ -29,8 +29,8 @@ object DictResource {
     SQL(sql).update().apply()
   }
 
-  def findByMainWord(mainWord: String)(implicit s: DBSession = AutoSession): List[Entry] = {
-    sql"select entry, reading, meaning from dict where entry = ${mainWord}"
+  def findByMainWords(mainWords: Set[String])(implicit s: DBSession = AutoSession): List[Entry] = {
+    sql"select entry, reading, meaning from dict where entry in (${mainWords})"
       .map { rs => Entry(rs) }.list().apply()
   }
 

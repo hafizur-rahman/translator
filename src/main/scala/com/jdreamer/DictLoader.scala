@@ -40,7 +40,7 @@ object DictLoader {
       bulkLoad(csvFile.getAbsolutePath)
     }
 
-    val result = findByMainWord("誼み")
+    val result = findByMainWords(Set("誼み"))
     result.foreach(println)
   }
 

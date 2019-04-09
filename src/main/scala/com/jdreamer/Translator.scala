@@ -57,14 +57,20 @@ object Translator {
 
     lines.flatMap { line =>
       val tokens = tokenizer.tokenize(line).asScala
+        .flatMap { token =>
+          val baseForm = token.getBaseForm
 
-      tokens.flatMap { token =>
-        val baseForm = token.getBaseForm
-        if (!(baseForm == "*") && token.getPartOfSpeechLevel1 == "名詞") {
-          findByMainWord(baseForm)
-        } else {
-          None
-        }
+          if (!(baseForm == "*") && token.getPartOfSpeechLevel1 == "名詞") {
+            Option(baseForm)
+          } else {
+            None
+          }
+        }.toSet
+
+      if (tokens.nonEmpty) {
+        findByMainWords(tokens)
+      } else {
+        None
       }
     }
   }
