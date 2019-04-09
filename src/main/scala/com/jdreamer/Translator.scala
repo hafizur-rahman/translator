@@ -13,11 +13,18 @@ import scalikejdbc._
 import scala.collection.JavaConverters._
 
 object Translator {
-  //val url = "https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array"
-  //val url = "http://www.ne.jp/asahi/hishidama/home/tech/scala/source.html"
-  val url = "http://www.ne.jp/asahi/hishidama/home/tech/scala/any.html"
+  val urls = List(
+    "https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "http://www.ne.jp/asahi/hishidama/home/tech/scala/source.html",
+    "http://www.ne.jp/asahi/hishidama/home/tech/scala/any.html",
+    "http://www.intellilink.co.jp/article/column/ai/index.html"
+  )
 
   def main(args: Array[String]): Unit = {
+    urls.foreach(file => processFile(file))
+  }
+
+  private def processFile(url: String) = {
     val encoding = "UTF-8"
 
     val file = new java.io.File(s"${url.hashCode}.tmp")
@@ -29,7 +36,6 @@ object Translator {
       FileUtils.writeStringToFile(file, text, encoding)
     }
 
-
     val lines = FileUtils.readLines(file, encoding).asScala.toList
 
     Class.forName("org.h2.Driver")
@@ -37,7 +43,7 @@ object Translator {
 
     implicit val session = AutoSession
 
-    val words = searchWords(lines)//.toSet
+    val words = searchWords(lines) //.toSet
     val translations = words.map(e => s"${e.mainWord}, ${e.reading}, ${e.meaning}")
 
     FileUtils.writeLines(new File(s"${url.hashCode}.tr"), encoding, translations.asJavaCollection)
@@ -55,7 +61,7 @@ object Translator {
       tokens.flatMap { token =>
         val baseForm = token.getBaseForm
         if (!(baseForm == "*") && token.getPartOfSpeechLevel1 == "名詞") {
-          findByMainWord(baseForm).map(e => e.copy(reading = s"${e.reading} (${token.getReading})"))
+          findByMainWord(baseForm)
         } else {
           None
         }

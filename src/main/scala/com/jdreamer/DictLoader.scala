@@ -1,11 +1,13 @@
 package com.jdreamer
 
+import java.io.{File, FileWriter}
+
 import scalikejdbc._
-
 import com.jdreamer.DictResource._
+import com.opencsv.CSVWriter
+import org.apache.commons.io.FileUtils
 
-import scala.io.Source
-
+import scala.collection.JavaConverters._
 
 object DictLoader {
   val databasePath = "./database/dict"
@@ -18,31 +20,38 @@ object DictLoader {
 
     implicit val session = AutoSession
 
-    createTables()
+    //createTables()
 
-    val loadDictionary = true
+    val loadDictionary = false
     if (loadDictionary) {
-      val s = Source.fromFile("/home/horizon/IdeaProjects/translate/src/main/resources/edict", "EUC-JP")
-      try {
-        for (line <- s.getLines) {
-          processLine(line)
-        }
-      } finally {
-        s.close
+      val csvFile = new File("dict.csv")
+      val lines = FileUtils.readLines(
+        new File("/home/horizon/IdeaProjects/translate/src/main/resources/edict"), "EUC-JP").asScala
+
+
+      val writer = new CSVWriter(new FileWriter(csvFile))
+
+      lines.foreach{ line =>
+        processLine(line).map(data => writer.writeNext(data, true))
       }
+
+      writer.close()
+
+      bulkLoad(csvFile.getAbsolutePath)
     }
 
     val result = findByMainWord("誼み")
     result.foreach(println)
-
   }
 
-  private def processLine(line: String) = {
+  private def processLine(line: String): Option[Array[String]] = {
     line match {
       case r(mainWord, reading, meaning) =>
-        create(Entry(mainWord, reading, meaning))
+        Some(Array(mainWord,reading, meaning))
 
-      case _ => // Do nothing
+      case _ =>
+        println(line)
+        None
     }
   }
 

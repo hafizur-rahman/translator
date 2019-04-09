@@ -5,6 +5,7 @@ version := "0.1"
 scalaVersion := "2.12.8"
 
 libraryDependencies ++= Seq(
+  "com.opencsv" % "opencsv" % "4.1",
   "org.jsoup" % "jsoup" % "1.11.3",
   "commons-io" % "commons-io" % "2.6",
   "com.atilika.kuromoji" % "kuromoji-ipadic" % "0.9.0",
