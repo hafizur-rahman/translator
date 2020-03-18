@@ -2,9 +2,11 @@ package com.jdreamer.tutor;
 
 import com.atilika.kuromoji.ipadic.Token;
 import com.atilika.kuromoji.ipadic.Tokenizer;
+import com.jdreamer.tutor.model.ParseSiteReq;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -19,9 +21,10 @@ public class VocabularyController {
     @Autowired
     private Map<String, String> dictionary;
 
-    @GetMapping("/parse-url")
-    public String byURL(@RequestParam(name = "url") String url) throws IOException {
-        Document doc = Jsoup.connect(url).get();
+    @RequestMapping(value = "/parse-url", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String byURL(@RequestBody ParseSiteReq parseSiteReq) throws IOException {
+        Document doc = Jsoup.connect(parseSiteReq.getUrl()).get();
 
         return doc.text();
     }

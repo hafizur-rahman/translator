@@ -5,7 +5,16 @@ const http = axios.create({
 
 var vocabulary = Vue.extend({
     template: `<div id="vocabulary" class="container-fluid">
-        <div>Input Text:</div>
+        <form class="form-inline container-fluid myForm">
+            <form class="form-horizontal container-fluid">
+                <div class="form-group">                
+                    <label for="fname">URL:</label>
+                    <input type="text" class="container-fluid" name="url" size="100" id="url" v-model="url">
+                    <input class="btn btn-primary" type="submit" value="Parse Site" @click.prevent="parseSite">
+                </div>
+            </form>
+        </form>
+
         <form class="form-horizontal container-fluid">
             <div class="form-group">
                 <div class="col-sm-10">
@@ -13,14 +22,14 @@ var vocabulary = Vue.extend({
                 </div>
             </div>
             <div class="text-center myForm"> 
-                <input class="btn btn-primary" type="submit" value="Send" @click.prevent="submit">
+                <input class="btn btn-primary" type="submit" value="Parse Text" @click.prevent="parseText">
             </div>
         </form>
         <table v-if="results" class="container-fluid table table-bordered">
             <thead>
                 <tr>
-                    <th v-for="col in columns">
-                        {{ col }}
+                    <th v-for="title in titles">
+                        {{ title }}
                     </th>
                 </tr>
             </thead>
@@ -35,14 +44,25 @@ var vocabulary = Vue.extend({
         </div>`,
     data: function () {
         return {
+            url: "",
             message: "",
-            results: null,
-            columns: ["baseForm","reading",	"pronunciation","meaning"]
+            results: "",
+            titles: ["Word", "Reading", "Pronunciation", "English Meaning"],
+            columns: ["baseForm", "reading", "pronunciation", "meaning"]
         }
     },
     methods: {
-        submit: function () {
-            http.post("/", { "text": this.message })
+        parseSite: function () {
+            http.post("/parse-url", { "url": this.url })
+                .then(response => {
+                    this.message = response.data
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        parseText: function () {
+            http.post("/parse-text", { "text": this.message })
                 .then(response => {
                     this.results = response.data
                 })

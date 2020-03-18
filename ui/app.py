@@ -16,8 +16,17 @@ def index():
                            VOCABULARY_SERVICE_URI=VOCABULARY_SERVICE_URI)
 
 
-@app.route('/api/', methods=['POST'])
-def api():
+@app.route('/api/parse-url', methods=['POST'])
+def parseUrl():
+    response = requests.post('/'.join([VOCABULARY_SERVICE_URI, 'parse-url']),
+                         headers={'Content-type': 'application/json'},
+                         data=json.dumps(request.json, ensure_ascii=False).encode("UTF-8"))
+
+    return response.text
+
+
+@app.route('/api/parse-text', methods=['POST'])
+def parseSite():
     response = requests.post('/'.join([VOCABULARY_SERVICE_URI, 'word-list']),
                          headers={'Content-type': 'application/json'},
                          data=json.dumps(request.json, ensure_ascii=False).encode("UTF-8"))
