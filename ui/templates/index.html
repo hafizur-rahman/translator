@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+<header class="container-fluid bHead">
+    <div class="container bHead">
+        <h1><a href="/">{{ title }}</a></h1>
+    </div>
+</header>
+<div id="app">
+    <div class="container">
+        <vocabulary v-if="ok"></vocabulary>
+    </div>
+</div>
+{% endblock %}

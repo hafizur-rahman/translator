@@ -27,7 +27,7 @@ public class VocabularyController {
     }
 
     @PostMapping("/word-list")
-    public Collection<Word> getWordList(@RequestBody String text) {
+    public Map<String, Object> getWordList(@RequestBody String text) {
         List<Word> words = new ArrayList<>();
 
         List<Token> tokens = tokenizer.tokenize(text);
@@ -38,6 +38,11 @@ public class VocabularyController {
             }
         }
 
-        return words;
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", "success");
+        result.put("results", words);
+        result.put("status", 200);
+
+        return result;
     }
 }

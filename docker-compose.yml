@@ -1,0 +1,20 @@
+version: "3.7"
+
+services:
+  api:
+    build: ./api
+    ports:
+      - "5000:5000"
+    restart: always
+
+  ui:
+    build: ./ui
+    volumes:
+      - "./ui:/opt/front"
+    ports:
+      - "5001:5001"
+    restart: always
+    links:
+      - api
+    environment:
+      - VOCABULARY_SERVICE_URI=http://api:5000

@@ -9,7 +9,7 @@ import org.springframework.core.io.Resource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.*;
@@ -25,7 +25,7 @@ public class ResourceConfig {
     public Map<String, String> dictionary() {
         Map<String, String> dict = new HashMap<>();
 
-        Pattern regex = Pattern.compile("([^\\s]+)\\s?\\[([^\\]]+)\\]\\s?/\\s?(.+)");
+        Pattern regex = Pattern.compile("([^\\s]+)\\s?\\[.*\\]\\s?/\\s?(.+)");
 
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(edict.getInputStream(), "EUC-JP"))) {
@@ -35,7 +35,7 @@ public class ResourceConfig {
                 Matcher m = regex.matcher(line);
 
                 if (m.matches()) {
-                    dict.put(m.group(1), m.group(3));
+                    dict.put(m.group(1), m.group(2));
                 }
 
                 // read next line
