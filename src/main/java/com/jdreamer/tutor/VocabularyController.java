@@ -17,7 +17,7 @@ public class VocabularyController {
     private Tokenizer tokenizer = new Tokenizer();
 
     @Autowired
-    private Map<String, String> dictonary;
+    private Map<String, String> dictionary;
 
     @GetMapping("/parse-url")
     public String byURL(@RequestParam(name = "url") String url) throws IOException {
@@ -32,8 +32,9 @@ public class VocabularyController {
 
         List<Token> tokens = tokenizer.tokenize(text);
         for (Token token : tokens) {
-            if (!token.getBaseForm().equals("*") && dictonary.containsKey(token.getBaseForm())) {
-                words.add(new Word(token.getBaseForm(), token.getReading(), token.getPronunciation(), dictonary.get(token.getBaseForm())));
+            if (!token.getBaseForm().equals("*") && dictionary.containsKey(token.getBaseForm())) {
+                words.add(new Word(token.getBaseForm(), token.getReading(),
+                        token.getPronunciation(), dictionary.get(token.getBaseForm())));
             }
         }
 
