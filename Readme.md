@@ -1,5 +1,6 @@
 ## Build API
 ```
+cd api
 mvn clean package
 ```
 
